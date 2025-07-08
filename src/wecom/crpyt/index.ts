@@ -46,7 +46,20 @@ export class WecomCrpyt {
     echostr: string,
     msg_signature: string
   ) {
-    const signature = getSignature(this.token, timestamp, nonce, echostr);
+    const signature = this.signature(timestamp, nonce, echostr);
     return signature === msg_signature;
   }
+
+  /**
+   * 签名
+   * @param timestamp 时间戳
+   * @param nonce 随机数
+   * @param echostr 随机字符串
+   * @returns 
+   */
+  signature(timestamp: number,
+    nonce: string,
+    echostr: string,){
+      return getSignature(this.token, timestamp, nonce, echostr);
+    }
 }
