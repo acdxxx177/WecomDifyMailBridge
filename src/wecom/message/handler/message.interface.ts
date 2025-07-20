@@ -1,4 +1,5 @@
-import type { ReceiveMessage } from "../schemas/index.js";
+import type { ReceiveMessage } from '../schemas/receive.message.js'
+import type { SendMessage } from '../schemas/send.message.js'
 export interface MessageHandler {
-  handle(message: ReceiveMessage): string;
+  handle(message: ReceiveMessage): SendMessage
 }

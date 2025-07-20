@@ -1,34 +1,25 @@
-import { decrypt, getSignature } from "@wecom/crypto";
+import { decrypt, getSignature, encrypt } from '@wecom/crypto'
 
 export class WecomCrpyt {
   // 企业微信Token
-  private token: string;
+  private static token: string = process.env.WECOM_CALLBACK_TOKEN!
   // 企业微信EncodingAESKey
-  private encodingAESKey: string;
-
-  /**
-   * @param {string} token 企业微信Token
-   * @param {string} encodingAESKey 企业微信EncodingAESKey
-   */
-  constructor(token: string, encodingAESKey: string) {
-    this.token = token;
-    this.encodingAESKey = encodingAESKey;
-  }
+  private static encodingAESKey: string = process.env.WECOM_CALLBACK_AESKEY!
 
   /**
    * 解密
    * @param {string} ciphered 密文
    * @return {string}
    */
-  decrypt(ciphered: string) {
+  public static decrypt(ciphered: string) {
     try {
-      const { id, message } = decrypt(this.encodingAESKey, ciphered);
-      console.log(`id: ${id}`);
-      console.log(`message: ${message}`);
-      return message;
+      const { id, message } = decrypt(this.encodingAESKey, ciphered)
+      console.log(`id: ${id}`)
+      console.log(`message: ${message}`)
+      return message
     } catch (e) {
-      console.log(e);
-      return null;
+      console.log(e)
+      return null
     }
   }
 
@@ -40,14 +31,14 @@ export class WecomCrpyt {
    * @param {string} msg_signature 消息签名
    * @return {boolean}
    */
-  verify(
+  public static verify(
     timestamp: number,
     nonce: string,
     echostr: string,
-    msg_signature: string
+    msg_signature: string,
   ) {
-    const signature = this.signature(timestamp, nonce, echostr);
-    return signature === msg_signature;
+    const signature = this.signature(timestamp, nonce, echostr)
+    return signature === msg_signature
   }
 
   /**
@@ -55,11 +46,19 @@ export class WecomCrpyt {
    * @param timestamp 时间戳
    * @param nonce 随机数
    * @param echostr 随机字符串
-   * @returns 
+   * @returns
    */
-  signature(timestamp: number,
-    nonce: string,
-    echostr: string,){
-      return getSignature(this.token, timestamp, nonce, echostr);
-    }
+  public static signature(timestamp: number, nonce: string, echostr: string) {
+    return getSignature(this.token, timestamp, nonce, echostr)
+  }
+
+  /**
+   * 加密
+   * @param message 消息
+   * @param id id 企业微信的CorpID
+   * @returns
+   */
+  public static encrypt(message: string, id: string) {
+    return encrypt(this.encodingAESKey, message, id)
+  }
 }
